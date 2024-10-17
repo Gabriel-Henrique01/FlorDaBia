@@ -1,0 +1,92 @@
+
+
+
+
+/*Barra lateral*/
+
+.layout {
+    display: flex; /* Utiliza flexbox para o layout */
+}
+
+.sidebar {
+    width: 200px; /* Largura da barra lateral */
+    background-color: #e1a8ff; /* Cor de fundo da barra lateral */
+    padding: 20px;
+    margin-top: 0px;
+    height: 100vh; /* Ocupa a altura total da viewport */
+    position: fixed; /* Fixa a barra lateral */
+    left: 0;
+}
+
+.sidebar ul {
+    list-style: none; /* Remove os marcadores da lista */
+}
+
+.sidebar li {
+    margin-bottom: 15px; /* Espaçamento entre os itens */
+}
+
+.sidebar a {
+    text-decoration: none; /* Remove sublinhado */
+    color: white; /* Cor do texto */
+    font-weight: bold; /* Negrito */
+}
+
+.sidebar a:hover {
+    text-decoration: underline; /* Sublinha ao passar o mouse */
+}
+
+h3{
+    color: #fff;
+    padding-bottom: 10px;
+}
+
+.embaixo {
+    margin-top: 380px; /* Empurra esta seção para a parte inferior */
+    padding-top: 20px; /* Espaçamento superior */
+    border-top: 1px solid white; /* Linha de separação */
+}
+
+.embaixo ul {
+    padding: 0; /* Remove o padding padrão */
+}
+
+.embaixo li {
+    margin-bottom: 10px; /* Espaçamento entre os itens */
+}
+
+
+/*PARTE DE INSERIR*/
+
+
+.container {
+    background-color: #E1A8FF;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    width: 38%;
+    margin-top: 4%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+form{
+    display: flex;
+    flex-direction: column;
+}
+.coiso{
+    font-size: 20px;
+    padding: 2%;
+    border-radius: 10px;
+    border-color: #E1A8FF;
+    margin-top: 4%;
+    margin-bottom: 4%;
+}
+.botao{
+    font-size: 20px;
+    padding: 2%;
+    border-radius: 10px;
+    background-color: white;
+    margin-top: 4%;
+    margin-bottom: 4%;
+}

@@ -1,0 +1,91 @@
+
+
+/*Barra lateral*/
+
+.layout {
+    display: flex; /* Utiliza flexbox para o layout */
+}
+
+.sidebar {
+    width: 200px; /* Largura da barra lateral */
+    background-color: #e1a8ff; /* Cor de fundo da barra lateral */
+    padding: 20px;
+    margin-top: 0px;
+    height: 100vh; /* Ocupa a altura total da viewport */
+    position: fixed; /* Fixa a barra lateral */
+    left: 0;
+}
+
+.sidebar ul {
+    list-style: none; /* Remove os marcadores da lista */
+}
+
+.sidebar li {
+    margin-bottom: 15px; /* Espaçamento entre os itens */
+}
+
+.sidebar a {
+    text-decoration: none; /* Remove sublinhado */
+    color: white; /* Cor do texto */
+    font-weight: bold; /* Negrito */
+}
+
+.sidebar a:hover {
+    text-decoration: underline; /* Sublinha ao passar o mouse */
+}
+
+h3{
+    color: #fff;
+    padding-bottom: 10px;
+}
+
+.embaixo {
+    margin-top: 380px; /* Empurra esta seção para a parte inferior */
+    padding-top: 20px; /* Espaçamento superior */
+    border-top: 1px solid white; /* Linha de separação */
+}
+
+.embaixo ul {
+    padding: 0; /* Remove o padding padrão */
+}
+
+.embaixo li {
+    margin-bottom: 10px; /* Espaçamento entre os itens */
+}
+
+/*Tabela*/
+
+
+.container {
+    display: flex;
+    justify-content: center; /* Centraliza horizontalmente */
+    margin-top: 50px;
+    margin-left: 230px; /* Espaço para a barra lateral */
+   
+}
+
+/* Estilos da Tabela */
+table {
+    border-collapse: collapse;
+    width: 80%; /* Largura da tabela */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra da tabela */
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid black;
+    text-align: center; /* Centraliza o texto */
+}
+
+th {
+    background-color: #e1a8ff; /* Cor do cabeçalho */
+    color: white;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2; /* Cor das linhas pares */
+}
+
+tr:hover {
+    background-color: #d6d6d6; /* Cor ao passar o mouse */
+}

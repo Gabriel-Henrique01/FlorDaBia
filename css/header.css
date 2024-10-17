@@ -1,0 +1,155 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+.dropdown{
+    display: flex;
+    flex-direction: row;
+    z-index: 999;
+}
+
+.dropdown-menu{
+    position: absolute;
+    display: none;
+    background-color: #e1a8ff;
+    margin: 14px 0;
+    padding: 10px;
+    width: 130px;
+}
+
+details {
+    margin: 0;
+    display: flex;
+    z-index: 999;
+}
+
+summary {
+    display: flex;
+    list-style: none;
+    text-align: left;
+    color: white;
+    padding: 10px;
+    z-index: 999;
+}
+
+.dropdown-menu a{
+    display: flex;
+    flex-direction: row;
+    color: white;
+    justify-content: start;
+    list-style: none;
+    padding: 10px;
+}
+
+.dropdown:hover .dropdown-menu{
+    list-style: none;
+    display: block;
+}
+
+.header {
+    background-color: #e1a8ff;
+    max-width: 100%;
+    position: relative;
+}
+
+.sessoes-header {
+    padding-bottom: 1%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+}
+
+.escrita-header {
+    color: white;
+    padding: 0;
+    margin: 0;
+}
+
+.logo {
+    padding-top: 1%;
+    width: 15%;
+    height: auto;
+}
+
+.logo-header {
+    display: flex;
+    justify-content: center;
+    padding-bottom: 1%;
+}
+
+.icon {
+    width: 4%;
+    height: 4%;
+    padding-left: 1%;
+    margin: 0;
+}
+
+
+
+.supremo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+    flex: 0;
+    text-align: center;
+}
+
+.supremo a{
+    text-decoration: none;
+    color: white;
+}
+
+/* Menu Responsivo */
+.menu-icon {
+    display: none; /* Esconde o ícone do menu por padrão */
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    .sessoes-header {
+        display: none; /* Esconde os itens do menu */
+        flex-direction: column; /* Alinha verticalmente */
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background-color: #e1a8ff; /* Cor de fundo do menu */
+        z-index: 10;
+    }
+
+    .linha{
+        visibility: hidden;
+    }
+
+    .icon{
+        width: 25px;
+        height: 25px;
+    }
+
+    .menu-icon {
+        display: block; /* Exibe o ícone do menu */
+        display: flex;
+        justify-content: flex-end;
+        margin-top: -20px;
+        
+    }
+
+  
+    .sessoes-header.active {
+        display: flex; /* Exibe os itens quando ativo */
+        align-items: center;
+       
+    }
+}

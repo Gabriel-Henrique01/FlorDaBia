@@ -1,0 +1,465 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+.dropdown{
+    display: flex;
+    flex-direction: row;
+    z-index: 999;
+}
+
+.dropdown-menu{
+    position: absolute;
+    display: none;
+    background-color: #e1a8ff;
+    margin: 14px 0;
+    padding: 10px;
+    width: 130px;
+}
+
+details {
+    margin: 0;
+    display: flex;
+    z-index: 999;
+}
+
+summary {
+    display: flex;
+    list-style: none;
+    text-align: left;
+    color: white;
+    padding: 10px;
+    z-index: 999;
+}
+
+.dropdown-menu a{
+    display: flex;
+    flex-direction: row;
+    color: white;
+    justify-content: start;
+    list-style: none;
+    padding: 10px;
+}
+
+.dropdown:hover .dropdown-menu{
+    list-style: none;
+    display: block;
+}
+
+.header {
+    background-color: #e1a8ff;
+    max-width: 100%;
+    position: relative;
+}
+
+.sessoes-header {
+    padding-bottom: 1%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+}
+
+.escrita-header {
+    color: white;
+    padding: 0;
+    margin: 0;
+}
+
+.logo {
+    padding-top: 1%;
+    width: 15%;
+    height: auto;
+}
+
+.logo-header {
+    display: flex;
+    justify-content: center;
+    padding-bottom: 1%;
+}
+
+.icon {
+    width: 4%;
+    height: 4%;
+    padding-left: 1%;
+    margin: 0;
+}
+
+
+
+.supremo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+    flex: 0;
+    text-align: center;
+}
+
+.supremo a{
+    text-decoration: none;
+    color: white;
+}
+
+/* Menu Responsivo */
+.menu-icon {
+    display: none; /* Esconde o ícone do menu por padrão */
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    .sessoes-header {
+        display: none; /* Esconde os itens do menu */
+        flex-direction: column; /* Alinha verticalmente */
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background-color: #e1a8ff; /* Cor de fundo do menu */
+        z-index: 10;
+    }
+
+    .linha{
+        visibility: hidden;
+    }
+
+    .icon{
+        width: 25px;
+        height: 25px;
+    }
+
+    .menu-icon {
+        display: block; /* Exibe o ícone do menu */
+        display: flex;
+        justify-content: flex-end;
+        margin-top: -20px;
+        
+    }
+
+  
+    .sessoes-header.active {
+        display: flex; /* Exibe os itens quando ativo */
+        align-items: center;
+       
+    }
+}
+
+/* Catálogo */
+
+.pesquisa {
+    display: flex;
+    justify-content: center;
+    margin: 40px;
+}
+
+.pesquisa input {
+    width: 300px;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 25px;
+}
+
+h1 {
+    text-align: center;
+    margin: 40px;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Colunas automáticas com min-width de 250px */
+    gap: 40px; /* Espaçamento entre os cards */
+    padding: 0 60px; /* Espaço lateral */
+    margin-bottom: 80px; /* Espaço no final da página */
+}
+
+.card {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    padding: 15px;
+}
+
+.card img {
+    max-width: 100%;
+    height: 230px; /* Altura das imagens */
+    object-fit: cover; /* Imagem se ajusta sem distorcer */
+    background-size: cover;
+    border-radius: 10px 10px 0 0;
+}
+
+.card h2 {
+    font-size: 18px;
+    margin: 10px 0;
+}
+
+.card p {
+    background-color: #f4c3ff;
+    padding: 10px 0;
+    color: #333;
+    font-weight: bold;
+    border-radius: 0 0 10px 10px;
+    margin-bottom: 10px;
+}
+
+.card button {
+    background-color: #008080;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.card button:hover {
+    background-color: #008080;
+}
+
+/* Responsividade para telas menores */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 20px; /* Reduz o espaçamento lateral em telas menores */
+        gap: 20px; /* Diminui o espaçamento entre os cards */
+    }
+
+    .pesquisa input {
+        width: 100%; /* Largura total em telas menores */
+    }
+
+    .card img {
+        height: 200px; /* Ajusta altura das imagens em telas menores */
+    }
+
+    .card h2 {
+        font-size: 16px; /* Texto menor para telas pequenas */
+    }
+
+    .card button {
+        padding: 8px; /* Botões menores em telas pequenas */
+        font-size: 14px; /* Ajusta o tamanho da fonte */
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        grid-template-columns: 1fr; /* Apenas uma coluna em telas muito pequenas */
+        padding: 0 10px; /* Menos espaço nas laterais */
+    }
+
+    .card img {
+        height: 180px; /* Altura reduzida da imagem */
+    }
+
+    .card button {
+        padding: 6px; /* Botões menores em telas muito pequenas */
+        font-size: 12px; /* Texto menor nos botões */
+    }
+}
+
+
+
+
+
+
+
+
+/* Estilos gerais do footer */
+footer {
+    background-color: #E1A8FF;
+    margin-top: 76px;
+    color: #fff;
+    padding: 20px 0;
+    font-family: Arial, sans-serif;
+}
+
+/* Container principal do footer */
+.footer-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    align-items: flex-start;
+}
+
+/* Estilo da logo no footer */
+.footer-logo {
+    display: flex;
+    justify-content: center;
+    margin-top: 50px;
+}
+
+.footer-logo img {
+    width: 150px;
+}
+
+/* Colunas do footer */
+.footer-columns {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-top: 20px;
+    flex: 3;
+}
+
+/* Estilo individual das colunas */
+.footer-column {
+    margin-bottom: 20px;
+    text-align: center;
+    flex: 1;
+    min-width: 200px;
+    max-width: 300px; /* Define uma largura máxima para evitar colunas muito largas */
+}
+
+/* Títulos das colunas */
+.footer-column h3 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: #fff;
+}
+
+/* Remove os marcadores das listas */
+.footer-column ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-column li {
+    margin: 5px 0;
+}
+
+/* Links do menu */
+.footer-column .nav-link {
+    color: #fff;
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.3s;
+}
+
+.footer-column .nav-link:hover {
+    color: #ddd; /* Adiciona uma cor de destaque ao passar o mouse */
+}
+
+/* Informações de contato */
+.footer-column p {
+    font-size: 14px;
+    margin: 5px 0;
+}
+
+/* Ícones de redes sociais */
+.footer-social {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px; /* Ajusta o espaço acima dos ícones */
+}
+
+.footer-social h3 {
+    margin-bottom: 10px;
+}
+
+.footer-social a {
+    margin: 0 10px; /* Ajusta o espaço entre os ícones */
+}
+
+.footer-social img {
+    width: 30px;
+    height: 30px;
+    transition: transform 0.3s;
+}
+
+.footer-social a:hover img {
+    transform: scale(1.2);
+}
+
+/* Rodapé inferior */
+.footer-bottom {
+    text-align: center;
+    background-color: #E1A8FF;
+    margin-top: 20px;
+}
+
+.footer-bottom p {
+    font-size: 12px;
+    margin: 0;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .footer-container {
+        flex-direction: column;
+        align-items: center; /* Centraliza o conteúdo do footer */
+    }
+
+    .footer-logo {
+        margin-right: 0; /* Remove o espaço à direita da logo */
+        text-align: center; /* Centraliza a logo */
+    }
+
+    .footer-columns {
+        flex-direction: column;
+        align-items: center; /* Centraliza as colunas */
+        margin-left: 0; /* Remove o espaço à esquerda */
+    }
+
+    .footer-column {
+        margin: 10px 0;
+        text-align: center; /* Centraliza o texto das colunas */
+    }
+
+    .footer-social {
+        flex-direction: row; /* Garante que os ícones fiquem em uma linha */
+        align-items: center;
+        margin-top: 20px; /* Ajusta o espaço acima dos ícones */
+    }
+
+    .footer-social h3 {
+        margin-bottom: 0; /* Remove o espaço abaixo do título em telas menores */
+    }
+
+    .footer-column ul {
+        padding: 0;
+    }
+
+    .footer-column li {
+        display: block;
+        margin: 10px 0; /* Adiciona mais espaço entre os itens da lista em telas menores */
+    }
+}
+
+@media (max-width: 480px) {
+    
+    .footer{
+        max-height: 300px;
+    }
+    
+    
+    
+    .footer-column h3 {
+        font-size: 16px;
+    }
+
+    .footer-column .nav-link {
+        font-size: 12px;
+    }
+
+    .footer-social img {
+        width: 25px;
+        height: 25px;
+    }
+}
