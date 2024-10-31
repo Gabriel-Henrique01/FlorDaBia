@@ -46,7 +46,6 @@
                     <div class="supremo" style="margin-left: 10%;">
                         <div class="dropdown">
                             <a href="Catalogo.php" onclick="toggleProdutos(event);" style="text-decoration: none;"><p class="escrita-header">Produtos</p></a>
-                            <img class="icon" src="img/flor-icon.svg" alt="Ícone de Produtos">
                             <div id="dropdownProdutos" class="dropdown-menu" style="display: none;">
                                 <?php
 
@@ -75,7 +74,6 @@
                     <div class="supremo">
                         <div class="dropdown">
                             <a href="#" onclick="toggleOcasiões(event);"> <p class="escrita-header">Ocasiões</p></a>
-                            <img class="icon" src="img/ocasioes.svg" alt="Ícone de Ocasiões">
                             <div id="dropdownOcasiões" class="dropdown-menu" style="display: none;">
                                 <?php
 
@@ -117,17 +115,24 @@
                     </div>
                     <div class="supremo">
                         <a href="carrinho.php"><p class="escrita-header">Carrinho</p></a>
-                        <img class="icon" src="img/carrinho.svg" alt="Ícone de Carrinho">
                     </div>
                     <div class="supremo">
                         <p class="escrita-header linha">|</p>
                     </div>
                     <div class="supremo" style="margin-right: 10%;">
                         <?php 
-                            if(isset($_SESSION["Nome"])) {
+                            if (isset($_SESSION["IDAdmin"]) && !empty($_SESSION["IDAdmin"])) {
+                                $nome = $_SESSION["Nome"];
+                                echo "
+                                        <a href='Admin/Admin.php'> <p>" . $nome . "</p> </a>
+                                        <a href='logout.php' style='margin-left: 30px'> <p> Desconectar </p> </a>
+                                    ";
+                            }
+                            elseif(isset($_SESSION["Nome"])) {
                                 $nome = $_SESSION["Nome"];
                                 echo "
                                         <a href='perfil.php'> <p>" . $nome . "</p> </a>
+                                        <a href='logout.php' style='margin-left: 30px'> <p> Desconectar </p> </a>
                                     ";
                             } else {
                                 echo "<a href='Login.php'><p>Login</p></a>";

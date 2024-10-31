@@ -1,72 +1,37 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flor da Bia</title>
-    <link rel="stylesheet" href="css/reset.css">
-    <link rel="stylesheet" href="css/index2.css">
-</head>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Formatação de Número</title>
+        <script>
+            function formatarNumero(input) {
+                // Remove todos os caracteres não numéricos
+                let valor = input.value.replace(/\D/g, '');
+    
+                // Adiciona os parênteses e o hífen na formatação desejada
+                if (valor.length > 2) {
+                    valor = `(${valor.slice(0, 2)}) ${valor.slice(2, 6)}-${valor.slice(6, 10)}`;
+                } else if (valor.length > 0) {
+                    valor = `(${valor.slice(0, 2)}`;
+                }
+    
+                // Atualiza o valor do campo de entrada
+                input.value = valor;
+            }
+    
+            function salvarNumero(input) {
+                // Remove os parênteses e o hífen antes de salvar
+                const numeroSalvo = input.value.replace(/\D/g, '');
+                console.log("Número salvo:", numeroSalvo);
+                // Aqui você pode enviar o númeroSalvo para o servidor ou usá-lo conforme necessário
+            }
+        </script>
+    </head>
 <body>
   
   
     <!--MENU-->
-
-    <header>
-        <nav class="nav-bar">
-            <div class="header">
-                <div class="logo-header">
-                    <img class="logo" src="img/logo.png" alt="Logo">
-                </div>
-                <div class="menu-icon" onclick="toggleMenu()">
-                    <img id="menuToggle" src="img/iconmenu.svg" alt="Menu">
-                </div>
-                <div class="sessoes-header" id="menuItems">
-                    <div class="supremo" style="margin-left: 100px;">
-                        <div class="dropdown">
-                            <p class="escrita-header">Produtos</p>
-                            <img class="icon" src="img/flor-icon.svg" alt="Ícone de Produtos">
-                            <div class="dropdown-menu">
-                                <a href="">Flores</a>
-                                <br>
-                                <a href="">Sei lá</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="supremo">
-                        <p class="escrita-header linha">|</p>
-                    </div>
-                    <div class="supremo">
-                        <div class="dropdown">
-                            <a href="ocasioesromanticas.html"> <p class="escrita-header">Ocasiões</p></a>
-                            <img class="icon" src="img/ocasioes.svg" alt="Ícone de Ocasiões">
-                            <div class="dropdown-menu">
-                                <a href="">Amizade</a>
-                                <br>
-                                <a href="">Condolências</a>
-                                <br>
-                                <a href="">Desculpas</a>
-                                <br>
-                                <a href="">Maternidade</a>
-                                <br>
-                                <a href="">Romântica</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="supremo">
-                        <div class="dropdown">
-                            <p class="escrita-header linha">|</p>
-                        </div>
-                    </div>
-                    <div class="supremo">
-                        <div class="dropdown">
-                            <p class="escrita-header">Carrinho</p>
-                            <img class="icon" src="img/carrinho.svg" alt="Ícone de Carrinho">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </nav>
 
 
         <!--<nav class="nav-bar">
@@ -128,5 +93,15 @@
         </nav>
         -->
     </header>
+
+<body>
+    <form onsubmit="event.preventDefault(); salvarNumero(this.numero);">
+        <label for="numero">Número:</label>
+        <input type="text" id="numero" oninput="formatarNumero(this)" placeholder="Digite seu número" required>
+        <button type="submit">Salvar</button>
+    </form>
+</body>
+</html>
+
 </body>
 </html>

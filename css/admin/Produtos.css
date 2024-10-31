@@ -10,9 +10,8 @@
     width: 200px; /* Largura da barra lateral */
     background-color: #e1a8ff; /* Cor de fundo da barra lateral */
     padding: 20px;
-    margin-top: 0px;
+    margin-top: -1px;
     height: 100vh; /* Ocupa a altura total da viewport */
-    position: fixed; /* Fixa a barra lateral */
     left: 0;
 }
 

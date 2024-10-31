@@ -19,7 +19,7 @@ body {
 .dropdown-menu{
   position: absolute;
   display: none;
-  background-color: #e1a8ff;
+  background-color: #fff;
   margin: 14px 0;
   padding: 10px;
   width: 130px;
@@ -35,7 +35,7 @@ summary {
   display: flex;
   list-style: none;
   text-align: left;
-  color: white;
+  color: #000;
   padding: 10px;
   z-index: 999;
 }
@@ -43,7 +43,7 @@ summary {
 .dropdown-menu a{
   display: flex;
   flex-direction: row;
-  color: white;
+  color: #000;
   justify-content: start;
   list-style: none;
   padding: 10px;
@@ -64,11 +64,10 @@ summary {
   padding-bottom: 1%;
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
+  justify-content: center; /* Centraliza os itens */
   align-items: center;
   width: 100%;
 }
-
 .escrita-header {
   color: white;
   padding: 0;
@@ -87,21 +86,13 @@ summary {
   padding-bottom: 1%;
 }
 
-.icon {
-  width: 4%;
-  height: 4%;
-  padding-left: 1%;
-  margin: 0;
-}
-
-
-
 .supremo {
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0;
-  margin: 0;
+  margin-left:20px;
+  margin-right: 20px;
   flex: 0;
   text-align: center;
 }
@@ -121,9 +112,11 @@ summary {
   .sessoes-header {
       display: none; /* Esconde os itens do menu */
       flex-direction: column; /* Alinha verticalmente */
-      position: absolute;
+      align-items: center; /* Centraliza verticalmente */
+      justify-content: center; /* Centraliza horizontalmente */
       top: 100%;
-      left: 0;
+      left: 0; /* Ajusta a posição */
+      right: 0; /* Ajusta a posição */
       width: 100%;
       background-color: #e1a8ff; /* Cor de fundo do menu */
       z-index: 10;
@@ -133,11 +126,7 @@ summary {
       visibility: hidden;
   }
 
-  .icon{
-      width: 25px;
-      height: 25px;
-  }
-
+ 
   .menu-icon {
       display: block; /* Exibe o ícone do menu */
       display: flex;
@@ -149,11 +138,19 @@ summary {
 
   .sessoes-header.active {
       display: flex; /* Exibe os itens quando ativo */
-      align-items: center;
-     
+  }
+
+  .escrita-header{
+      margin-bottom: 10px;
+  }
+
+  .supremo {
+      flex: 1; /* Faz cada item ocupar o mesmo espaço */
+      text-align: center; /* Centraliza o texto */
   }
 }
 
+/*Carrinho*/
 
 .container {
     max-width: 800px;
@@ -223,12 +220,13 @@ summary {
   }
 
   .button-container {
-    margin-top: 20px;
     text-align: right;
   }
 
   .button-container button {
     padding: 10px 20px;
+    margin-top: 20px;
+    margin-left: 20px;
     background-color: #e0b0ff;
     color: #fff;
     border: none;
@@ -242,6 +240,10 @@ summary {
     border: none;
     cursor: pointer;
     text-align: center;
+    margin-top: 20px;
+  }
+
+  p{
     margin-top: 20px;
   }
 
@@ -368,3 +370,59 @@ footer {
   font-size: 12px;
   margin: 0;
 }
+
+/*Endereço*/
+
+.address-container {
+  max-width: 600px; /* Define uma largura máxima para o container */
+  margin: 20px auto; /* Centraliza o container */
+  padding: 20px; /* Espaçamento interno */
+  background-color: #ffffff; /* Cor de fundo */
+  border: 1px solid #ddd; /* Borda sutil */
+  border-radius: 8px; /* Bordas arredondadas */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Sombra para efeito de profundidade */
+}
+
+.address-container h2 {
+  text-align: center; /* Centraliza o título */
+  color: #333; /* Cor do texto */
+  margin-bottom: 20px; /* Espaçamento abaixo do título */
+}
+
+.address-container label {
+  display: block; /* Faz com que os rótulos ocupem a linha inteira */
+  margin: 10px 0 5px; /* Espaçamento entre o rótulo e o campo */
+  color: #555; /* Cor do texto do rótulo */
+}
+
+.address-container input {
+  width: 100%; /* Faz o input ocupar toda a largura do container */
+  padding: 10px; /* Preenchimento interno */
+  border: 1px solid #ccc; /* Borda sutil */
+  border-radius: 4px; /* Bordas arredondadas */
+  font-size: 16px; /* Tamanho da fonte */
+  margin-bottom: 15px; /* Espaçamento abaixo dos campos */
+}
+
+.address-container button {
+  width: 100%; /* Faz o botão ocupar toda a largura do container */
+  padding: 10px; /* Preenchimento interno */
+  background-color: #e1a8ff; /* Cor de fundo do botão */
+  color: #fff; /* Cor do texto */
+  border: none; /* Remove a borda padrão */
+  border-radius: 4px; /* Bordas arredondadas */
+  font-size: 16px; /* Tamanho da fonte */
+  cursor: pointer; /* Muda o cursor ao passar sobre o botão */
+  transition: background-color 0.3s; /* Efeito de transição para a cor de fundo */
+}
+
+.address-container button:hover {
+  background-color: #d58ff3; /* Cor do botão ao passar o mouse */
+}
+
+.address-container p {
+  color: red; /* Cor do texto de erro */
+  text-align: center; /* Centraliza a mensagem de erro */
+  margin-top: 10px; /* Espaçamento acima da mensagem */
+}
+  

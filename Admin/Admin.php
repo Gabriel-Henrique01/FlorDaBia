@@ -61,74 +61,80 @@
         </div>
     </div>
 
-    <?php
-        if(isset($_GET['mensagem']) && !empty($_GET['mensagem'])){
-            ?>
-                <div class="alert alert-warning" style="color: #000;">
-                    <?php echo $_GET['mensagem']?>
-                </div>
-            <?php
-        }
-    ?>
-
-    <div class="container">
-    <table>
-        <tr>
-            <th>NºPedido</th>
-            <th>Cliente (ID)</th>
-            <th>Produtos</th>
-            <th>Preço total</th>
-            <th>Data</th>
-            <th>Hora</th>
-            <th>Status</th>
-            <th>Ação</th>
-        </tr>
-        <?php 
-            
-
-            // Modifique a consulta para buscar apenas pedidos com status "Pendente"
-            $queryPedido = 'SELECT * FROM pedido INNER JOIN admin ON pedido.Local = admin.Local WHERE pedido.Status = "Pendente"';
-            $resultPedido = mysqli_query($conn, $queryPedido);
-
-            // Loop através dos pedidos
-            while($rowPedido  = mysqli_fetch_assoc($resultPedido)){
-
-                // Busca o nome do cliente
-                $queryCliente = 'SELECT Nome FROM cliente WHERE IDCliente = ' . $rowPedido['IDCliente'];
-                $resultCliente = mysqli_query($conn, $queryCliente);
-                $rowCliente =  mysqli_fetch_assoc($resultCliente);
-
-                echo  "<tr>";
-                echo  "<td>" . $rowPedido['IDPedido'] . "</td>";
-                echo  "<td>" . $rowCliente['Nome'] . " (" .  $rowPedido['IDCliente'] . ")</td>";
-
-                // Busca os produtos do pedido usando o ID do pedido
-                $queryProdutosPedidos = 'SELECT * FROM produtospedidos WHERE IDPedido = ' . $rowPedido['IDPedido'];
-                $resultProdutosPedidos  =  mysqli_query($conn, $queryProdutosPedidos);
-
-                echo '<td>';
-                // Loop através dos produtos do pedido
-                while($rowProcessamento = mysqli_fetch_assoc($resultProdutosPedidos)){
-                    // Busca os detalhes do produto
-                    $queryProdutos = 'SELECT * FROM produtos WHERE ID = ' . $rowProcessamento['IDProduto'];
-                    $resultProdutos = mysqli_query($conn, $queryProdutos);
-                    $rowProdutos = mysqli_fetch_assoc($resultProdutos);
-
-                    echo $rowProdutos['Nome'] . ' (' . $rowProcessamento['Quantidade'] . ') <br>';
-                }
-                
-                echo '</td>';
-                echo '<td>' . $rowPedido['PrecoTotal'] .  '</td>';
-                echo '<td>' . $rowPedido['Data'] . '</td>';
-                echo '<td>' . $rowPedido['Horario'] . '</td>';
-                echo '<td>' . $rowPedido['Status'] . '</td>';
-                echo '<td><a href="../#" onclick="concluir(event, ' . $rowPedido['IDPedido'] . ')">Concluir</a> | ';
-                echo '<a href="../#" onclick="excluir(event, ' . $rowPedido['IDPedido'] . ')">Excluir</a></td>';
-                echo '</tr>';
+    <div class="centro">
+        <?php
+            if(isset($_GET['mensagem']) && !empty($_GET['mensagem'])){
+                ?>
+                    <div class="alert alert-warning" style="color: #000;">
+                        <?php echo $_GET['mensagem']?>
+                    </div>
+                <?php
             }
         ?>
+    </div>
 
-    </table>
+    <div class="container">
+        <br>
+        <table>
+            <tr>
+                <th>NºPedido</th>
+                <th>Cliente (ID)</th>
+                <th>Produtos</th>
+                <th>Preço total</th>
+                <th>Cidade</th>
+                <th>Data</th>
+                <th>Hora</th>
+                <th>Status</th>
+                <th>Ação</th>
+            </tr>
+            <?php 
+                
+
+                // Modifique a consulta para buscar apenas pedidos com status "Pendente"
+                $Local = $_SESSION["Local"];
+                $queryPedido = "SELECT * FROM pedido INNER JOIN admin ON '$Local'= pedido.Local WHERE pedido.Status = 'Pendente' GROUP BY pedido.IDPedido";
+                $resultPedido = mysqli_query($conn, $queryPedido);
+
+                // Loop através dos pedidos
+                while($rowPedido = mysqli_fetch_assoc($resultPedido)){
+
+                    // Busca o nome do cliente
+                    $queryCliente = 'SELECT Nome FROM cliente WHERE IDCliente = ' . $rowPedido['IDCliente'];
+                    $resultCliente = mysqli_query($conn, $queryCliente);
+                    $rowCliente =  mysqli_fetch_assoc($resultCliente);
+
+                    echo  "<tr>";
+                    echo  "<td>" . $rowPedido['IDPedido'] . "</td>";
+                    echo  "<td>" . $rowCliente['Nome'] . " (" .  $rowPedido['IDCliente'] . ")</td>";
+
+                    // Busca os produtos do pedido usando o ID do pedido
+                    $queryProdutosPedidos = 'SELECT * FROM produtospedidos WHERE IDPedido = ' . $rowPedido['IDPedido'];
+                    $resultProdutosPedidos  =  mysqli_query($conn, $queryProdutosPedidos);
+
+                    echo '<td>';
+                    // Loop através dos produtos do pedido
+                    while($rowProcessamento = mysqli_fetch_assoc($resultProdutosPedidos)){
+                        // Busca os detalhes do produto
+                        $queryProdutos = 'SELECT * FROM produtos WHERE ID = ' . $rowProcessamento['IDProduto'];
+                        $resultProdutos = mysqli_query($conn, $queryProdutos);
+                        $rowProdutos = mysqli_fetch_assoc($resultProdutos);
+
+                        echo $rowProdutos['Nome'] . ' (' . $rowProcessamento['Quantidade'] . ') <br>';
+                    }
+                    
+                    echo '</td>';
+                    echo '<td>' . $rowPedido['PrecoTotal'] .  '</td>';
+                    echo '<td>' . (isset($rowPedido['Local']) ? $rowPedido['Local'] : "Cidade não disponível") . '</td>';
+                    echo '<td>' . $rowPedido['Data'] . '</td>';
+                    echo '<td>' . $rowPedido['Horario'] . '</td>';
+                    echo '<td>' . $rowPedido['Status'] . '</td>';
+                    echo '<td><a href="../#" onclick="concluir(event, ' . $rowPedido['IDPedido'] . ')">Concluir</a> | ';
+                    echo '<a href="../#" onclick="excluir(event, ' . $rowPedido['IDPedido'] . ')">Excluir</a></td>';
+                    echo '</tr>';
+                }
+            ?>
+
+        </table>
     </div>
 
   

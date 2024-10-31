@@ -10,6 +10,29 @@
         $row = mysqli_fetch_assoc($result);
 
     } 
+    
+    if (isset($_POST["envio"])) {
+            $email = $_POST["email"];
+            $senha = $_POST["senha"];
+
+            // Query para buscar o usuário com o e-mail e senha fornecidos
+            $sql = "SELECT * FROM admin WHERE Email = '$email' AND Senha = '$senha'";
+            $result = mysqli_query($conn, $sql);
+
+            // Verifica se foi encontrado algum resultado
+            if (mysqli_num_rows($result) == 1) {
+                $row = mysqli_fetch_assoc($result); // Busca os dados da linha
+
+                // Agora você pode acessar os dados da linha
+                $_SESSION["IDAdmin"] = $row["IDAdmin"];
+                $_SESSION["Nome"] = $row["Nome"];
+                $_SESSION["Local"] = $row["Local"];
+
+                header("Location: Admin/Admin.php");
+            } else {
+                echo "E-mail ou senha incorretos!";
+            }
+        }
 ?>
 
 
@@ -20,6 +43,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/login.css">
+    <link rel="website icon" type="png" href="img/Logo.png">
     <title>Login Administração</title>
 </head>
 <body>
@@ -42,7 +66,6 @@
                     <div class="supremo" style="margin-left: 10%;">
                         <div class="dropdown">
                             <a href="Catalogo.php" onclick="toggleProdutos(event);" style="text-decoration: none;"><p class="escrita-header">Produtos</p></a>
-                            <img class="icon" src="img/flor-icon.svg" alt="Ícone de Produtos">
                             <div id="dropdownProdutos" class="dropdown-menu" style="display: none;">
                                 <?php
 
@@ -71,7 +94,6 @@
                     <div class="supremo">
                         <div class="dropdown">
                             <a href="#" onclick="toggleOcasiões(event);"> <p class="escrita-header">Ocasiões</p></a>
-                            <img class="icon" src="img/ocasioes.svg" alt="Ícone de Ocasiões">
                             <div id="dropdownOcasiões" class="dropdown-menu" style="display: none;">
                                 <?php
 
@@ -113,17 +135,24 @@
                     </div>
                     <div class="supremo">
                         <a href="carrinho.php"><p class="escrita-header">Carrinho</p></a>
-                        <img class="icon" src="img/carrinho.svg" alt="Ícone de Carrinho">
                     </div>
                     <div class="supremo">
                         <p class="escrita-header linha">|</p>
                     </div>
                     <div class="supremo" style="margin-right: 10%;">
                         <?php 
-                            if(isset($_SESSION["Nome"])) {
+                            if (isset($_SESSION["IDAdmin"]) && !empty($_SESSION["IDAdmin"])) {
+                                $nome = $_SESSION["Nome"];
+                                echo "
+                                        <a href='Admin/Admin.php'> <p>" . $nome . "</p> </a>
+                                        <a href='logout.php' style='margin-left: 30px'> <p> Desconectar </p> </a>
+                                    ";
+                            }
+                            elseif(isset($_SESSION["Nome"])) {
                                 $nome = $_SESSION["Nome"];
                                 echo "
                                         <a href='perfil.php'> <p>" . $nome . "</p> </a>
+                                        <a href='logout.php' style='margin-left: 30px'> <p> Desconectar </p> </a>
                                     ";
                             } else {
                                 echo "<a href='Login.php'><p>Login</p></a>";
@@ -146,35 +175,6 @@
             </form>
         </div>
     </div>
-
-
-    <?php
-        if (isset($_POST["envio"])) {
-            $email = $_POST["email"];
-            $senha = $_POST["senha"];
-
-            // Query para buscar o usuário com o e-mail e senha fornecidos
-            $sql = "SELECT * FROM admin WHERE Email = '$email' AND Senha = '$senha'";
-            $result = mysqli_query($conn, $sql);
-
-            // Verifica se foi encontrado algum resultado
-            if (mysqli_num_rows($result) == 1) {
-                $row = mysqli_fetch_assoc($result); // Busca os dados da linha
-
-                // Agora você pode acessar os dados da linha
-                $_SESSION["IDAdmin"] = $row["IDAdmin"];
-                $_SESSION["Nome"] = $row["Nome"];
-
-                echo "Login realizado com sucesso!";
-                echo "<script> window.location.href = 'Admin/Admin.php'; </script>";
-            } else {
-                echo "E-mail ou senha incorretos!";
-            }
-        }
-    ?>
-
-
-
 
         <!-- FOOTER -->
         <footer>

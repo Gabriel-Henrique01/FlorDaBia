@@ -7,6 +7,54 @@ if (!isset($_SESSION["IDCliente"])) {
     exit();
 }
 
+function consultaCep($cep) {
+    $cep = preg_replace("/[^0-9]/", "", $cep);
+    $url = "https://viacep.com.br/ws/$cep/json/";
+
+    /* O cURL, ele é utilizado para fazer requisição à APIs, ele pode trabalhar com os formatos de arquivo, JSON e XML, ele trabalha com diversos
+    protocolos, como HTTPS, HTTP, FTP  */
+
+    $ch = curl_init($url);// inicia o cURL
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);//faz com que o resultado em JSON ou XML seja transformado em string, permitindo uma melhor manipulação
+    $response = curl_exec($ch);//Faz a requisição e armazena as variaveis 
+    curl_close($ch);// está finalizando o cURL
+
+    return json_decode($response, true);//faz com que o que o arquivo JSON vire um array associativo
+    
+}
+
+$cepData = [];
+
+$rua = '';
+$bairro = '';
+$cidade = '';
+$estado = '';
+// Defina as variáveis fora do bloco condicional
+
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cep'])) {
+    $cep = $_POST['cep'];
+    $cepData = consultaCep($cep);
+
+    // Atualizando as variáveis
+    $rua = $cepData['logradouro'] ?? '';
+    $bairro = $cepData['bairro'] ?? '';
+    $cidade = $cepData['localidade'] ?? '';
+    $estado = $cepData['uf'] ?? '';
+    $numero = $_POST["numero"] ?? '';
+
+    $_SESSION['endereco'] = [
+        'cep' => $cep,
+        'rua' => $rua,
+        'bairro' => $bairro,
+        'cidade' => $cidade,
+        'estado' => $estado,
+        'numero' => $numero
+    ];
+
+    
+}
+
 // Função para adicionar itens ao carrinho
 function adicionarAoCarrinho($produtoId, $produtoNome, $quantidade, $preco, $imagem) {
     global $conn;
@@ -92,6 +140,15 @@ if (isset($_GET['acao'])) {
 
 // Processar finalização do pedido
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['finalizar_pedido'])) {
+    $endereco = $_SESSION['endereco'] ?? null;
+
+    $rua = $endereco['rua'] ?? '';
+    $bairro = $endereco['bairro'] ?? '';
+    $cidade = $endereco['cidade'] ?? '';
+    $estado = $endereco['estado'] ?? '';
+    $cep = $endereco['cep'] ?? '';
+    $numero = $endereco['numero'] ?? '';
+
     $IDCliente = $_SESSION["IDCliente"];
 
     $queryCliente = "SELECT * FROM cliente WHERE IDCliente = $IDCliente";
@@ -112,7 +169,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['finalizar_pedido'])) 
 
     // Inserir o pedido com o valor total
     $InsertPedido = "INSERT INTO `pedido` (`IDCliente`, `Data`, `Horario`, `Status`, `PrecoTotal`, `Local`) 
-                     VALUES ('$IDCliente', '$data', '$hora', 'Pendente', '$total', '$local')";
+                     VALUES ('$IDCliente', '$data', '$hora', 'Pendente', '$total', '$cidade')";
 
     if ($conn->query($InsertPedido) === TRUE) {
         $query = "SELECT * FROM pedido ORDER BY IDPedido DESC LIMIT 1";
@@ -139,56 +196,63 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['finalizar_pedido'])) 
             // Adicionar os produtos à mensagem do WhatsApp
             $produtos .= "{$produto['quantidade']}x {$produto['nome']} - R$ {$produto['preco']}\n";
 
-            
+            unset($_SESSION['carrinho']);
         }
-
-        unset($_SESSION['carrinho']);
         
         // Formatando o valor total para exibição
         $totalFormatado = number_format($total, 2, ',', '.');
 
-        // Criar a mensagem para o WhatsApp
+        
+
+        
+
+// No campo da mensagem do WhatsApp, certifique-se de que o `$numero` seja passado corretamente, no trecho "Endereço"
         $mensagem = '
             *Agradecemos pela Preferência*
-        Estamos prontos para tornar seu dia mais florido. Nosso horário de atendimento é de segunda a sexta, das 8h às 18h, e aos sábados, domingos e feriados das 8h às 14h.
-        Link do site
-        ---------------------------------------
-        Confira o pedido abaixo:
-        N° Pedido: ' . $IDPedido . '
-        ---------------------------------------
-        
-        Produtos  
-        
-        Subtotal: R$ ' . number_format($total, 2, ',', '.') . '
-        Taxa de entrega não incluída
-        Total: R$ ' . number_format($total, 2, ',', '.') . '
-        
-        ---------------------------------------
-        
-        Tempo de entrega: de 2 horas à 3 horas
-        
-        Cliente: ' . $rowCliente['Nome'] . ' 
-        Telefone: ' . $rowCliente['Telefone'] . '
-        
-        Endereço, Nº - Complemento
-        Bairro, Cidade
-        CEP: ' . $rowCliente['Endereco'] . '
-        
-        Pagamento: Pix
-        Nome da conta Pix: FlorDaBia
-        Chave Pix: 46404501848
-        
-        Copie a chave e faça o pagamento através do Pix. O Flor Da Bia irá conferir o pagamento para liberação do seu pedido.
-        
-        Pedido gerado pelo Flor Da Bia às horas
+            Estamos prontos para tornar seu dia mais florido. Nosso horário de atendimento é de segunda a sexta, das 8h às 18h, e aos sábados, domingos e feriados das 8h às 14h.
+            Link do site
+            ---------------------------------------
+            Confira o pedido abaixo:
+            N° Pedido: ' . $IDPedido . '
+            ---------------------------------------
+
+            Produtos  
+
+            Subtotal: R$ ' . number_format($total, 2, ',', '.') . '
+            Taxa de entrega não incluída
+            Total: R$ ' . number_format($total, 2, ',', '.') . '
+
+            ---------------------------------------
+
+            Tempo de entrega: de 2 horas à 3 horas
+
+            Cliente: ' . $rowCliente['Nome'] . ' 
+            Telefone: ' . $rowCliente['Telefone'] . '
+            Endereço: ' . $rua . ' Nº ' . $numero . ' - ' . ($rowCliente['Complemento'] ?? 'Sem complemento') . '
+            Bairro: ' . $bairro . '
+            Cidade: ' . $cidade . ' - ' . $estado . '
+            CEP: ' . $cep . '
+
+            Pagamento: Pix
+            Nome da conta Pix: FlorDaBia
+            Chave Pix: 46404501848
+
+            Copie a chave e faça o pagamento através do Pix. O Flor Da Bia irá conferir o pagamento para liberação do seu pedido.
+
+            Pedido gerado pelo Flor Da Bia às horas
         ';
-
         // Criar a URL para redirecionar ao WhatsApp
-        $whatsappUrl = "https://wa.me/15991026694?text=" . rawurlencode($mensagem);
 
+        $queryAdmin = "SELECT * FROM Admin WHERE Local = '$cidade'";
+        $resultAdmin = mysqli_query($conn, $queryAdmin);
+        $rowAdmin = mysqli_fetch_assoc($resultAdmin);
+
+        $whatsappUrl = "https://wa.me/".$rowAdmin["Telefone"]."?text=" . rawurlencode($mensagem);
+        //echo $mensagem;
         // Redirecionar para o WhatsApp
         header("Location: $whatsappUrl");
         exit();
+
     } else {
         echo "Erro ao finalizar o pedido.";
     }
@@ -233,7 +297,6 @@ if(isset($_GET['Tipo'])) {
                     <div class="supremo" style="margin-left: 10%;">
                         <div class="dropdown">
                             <a href="Catalogo.php" onclick="toggleProdutos(event);" style="text-decoration: none;"><p class="escrita-header">Produtos</p></a>
-                            <img class="icon" src="img/flor-icon.svg" alt="Ícone de Produtos">
                             <div id="dropdownProdutos" class="dropdown-menu" style="display: none;">
                                 <?php
 
@@ -262,7 +325,6 @@ if(isset($_GET['Tipo'])) {
                     <div class="supremo">
                         <div class="dropdown">
                             <a href="#" onclick="toggleOcasiões(event);"> <p class="escrita-header">Ocasiões</p></a>
-                            <img class="icon" src="img/ocasioes.svg" alt="Ícone de Ocasiões">
                             <div id="dropdownOcasiões" class="dropdown-menu" style="display: none;">
                                 <?php
 
@@ -304,17 +366,24 @@ if(isset($_GET['Tipo'])) {
                     </div>
                     <div class="supremo">
                         <a href="carrinho.php"><p class="escrita-header">Carrinho</p></a>
-                        <img class="icon" src="img/carrinho.svg" alt="Ícone de Carrinho">
                     </div>
                     <div class="supremo">
                         <p class="escrita-header linha">|</p>
                     </div>
                     <div class="supremo" style="margin-right: 10%;">
                         <?php 
-                            if(isset($_SESSION["Nome"])) {
+                            if (isset($_SESSION["IDAdmin"]) && !empty($_SESSION["IDAdmin"])) {
+                                $nome = $_SESSION["Nome"];
+                                echo "
+                                        <a href='Admin/Admin.php'> <p>" . $nome . "</p> </a>
+                                        <a href='logout.php' style='margin-left: 30px'> <p> Desconectar </p> </a>
+                                    ";
+                            }
+                            elseif(isset($_SESSION["Nome"])) {
                                 $nome = $_SESSION["Nome"];
                                 echo "
                                         <a href='perfil.php'> <p>" . $nome . "</p> </a>
+                                        <a href='logout.php' style='margin-left: 30px'> <p> Desconectar </p> </a>
                                     ";
                             } else {
                                 echo "<a href='Login.php'><p>Login</p></a>";
@@ -377,32 +446,38 @@ if(isset($_GET['Tipo'])) {
         </tbody>
       </table>
     </div>
+        <div class="address-container">
+            <h2>Informações do Endereço</h2>
+            <form method="post" action="">
+                <label for="cep">CEP:</label>
+                <input type="text" name="cep" id="cep" placeholder="Digite o CEP" required>
+                <label for="numero">Número:</label>
+                <input type="text" name="numero" id="numero" placeholder="Digite o número do endereço" required>
+                <button type="submit">Buscar</button>
+            </form>
 
-        
+            <!-- Exibindo o endereço se a consulta ao CEP tiver retornado dados -->
+            <?php if (!empty($cepData) && !isset($cepData['erro'])): ?>
+                <label for="logradouro">Endereço:</label>
+                <input type="text" id="logradouro" value="<?= $rua ?>" name="logradouro"><br>
+
+                <label for="bairro">Bairro:</label>
+                <input type="text" id="bairro" value="<?= $bairro ?>" name="bairro"><br>
+
+                <label for="cidade">Cidade:</label>
+                <input type="text" id="cidade" value="<?= $cidade ?>" name="cidade"><br>
+
+                <label for="estado">Estado:</label>
+                <input type="text" id="estado" value="<?= $estado ?>" name="estado"><br>
+
+            <?php elseif (isset($cepData['erro'])): ?>
+                <p>CEP não encontrado. Por favor, insira o endereço manualmente.</p>
+            <?php endif; ?>
+    </div>
 
     <div class="button-container">
         <!-- Formulário para finalizar o pedido e redirecionar ao WhatsApp -->
-        <form action="carrinho.php" method="post">
-            <label for="city">Selecionar cidade</label>
-             <select name="city" id="city">
-                <?php 
-                    // Supondo que você já tenha a sessão ou um método para identificar o usuário logado, por exemplo:
-                    $admin_id = $_SESSION['IDAdmin']; // ou outra variável para pegar o ID do admin logado
-
-                    // Corrigindo a consulta para pegar o local de trabalho do admin logado
-                    $queryCity = "SELECT DISTINCT Local FROM admin";
-                    $resultCity = mysqli_query($conn, $queryCity);
-
-                    // Verificando se a consulta retorna resultados
-                    if(mysqli_num_rows($resultCity) > 0){
-                        while($rowCity = mysqli_fetch_assoc($resultCity)){
-                            echo "<option value='".$rowCity['Local']."'>".$rowCity['Local']."</option>";
-                        }
-                    } else {
-                        echo "<option value=''>Nenhuma cidade encontrada</option>";
-                    }
-                ?>
-            </select>        
+        <form action="carrinho.php" method="post">       
             <input type="hidden" name="finalizar_pedido" value="1">
             <button type="submit">Finalizar Pedido</button>
         </form>

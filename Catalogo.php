@@ -23,6 +23,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/reset.css">
     <link rel="website icon" type="png" href="img/Logo.png">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <title><?php echo htmlspecialchars($Tipo); ?></title> <!-- O título será o tipo selecionado -->
     <link rel="stylesheet" href="css/catalogo.css">
     <style>
@@ -33,7 +34,36 @@
             pointer-events: none; 
             border: 1px solid #ddd;
         }
+
+        #suggestions-dropdown {
+            max-height: 200px;
+            overflow-y: auto;
+            width: calc(100% - 2px);
+            box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .suggestion-item:hover {
+            background-color: #f0f0f0;
+        }
     </style>
+    <script>
+        $(document).ready(function(){
+            $(".pesquisa-button").click(function(event){
+                event.preventDefault(); // Previne o comportamento padrão de envio do formulário
+                var pesquisa = $(".pesquisa input[type='text']").val(); // Captura o valor do campo de texto
+                
+                // Faz a requisição AJAX
+                $.post("pesquisa.php",
+                {
+                    Pesquisa: pesquisa
+                },
+                function(data, ){
+                    $(".container").html(data);
+                });
+            }); 
+        });
+
+    </script>
 </head>
 <body>
     
@@ -53,7 +83,6 @@
                     <div class="supremo" style="margin-left: 10%;">
                         <div class="dropdown">
                             <a href="Catalogo.php" onclick="toggleProdutos(event);" style="text-decoration: none;"><p class="escrita-header">Produtos</p></a>
-                            <img class="icon" src="img/flor-icon.svg" alt="Ícone de Produtos">
                             <div id="dropdownProdutos" class="dropdown-menu" style="display: none;">
                                 <?php
 
@@ -82,7 +111,6 @@
                     <div class="supremo">
                         <div class="dropdown">
                             <a href="#" onclick="toggleOcasiões(event);"> <p class="escrita-header">Ocasiões</p></a>
-                            <img class="icon" src="img/ocasioes.svg" alt="Ícone de Ocasiões">
                             <div id="dropdownOcasiões" class="dropdown-menu" style="display: none;">
                                 <?php
 
@@ -124,17 +152,24 @@
                     </div>
                     <div class="supremo">
                         <a href="carrinho.php"><p class="escrita-header">Carrinho</p></a>
-                        <img class="icon" src="img/carrinho.svg" alt="Ícone de Carrinho">
                     </div>
                     <div class="supremo">
                         <p class="escrita-header linha">|</p>
                     </div>
                     <div class="supremo" style="margin-right: 10%;">
                         <?php 
-                            if(isset($_SESSION["Nome"])) {
+                            if (isset($_SESSION["IDAdmin"]) && !empty($_SESSION["IDAdmin"])) {
+                                $nome = $_SESSION["Nome"];
+                                echo "
+                                        <a href='Admin/Admin.php'> <p>" . $nome . "</p> </a>
+                                        <a href='logout.php' style='margin-left: 30px'> <p> Desconectar </p> </a>
+                                    ";
+                            }
+                            elseif(isset($_SESSION["Nome"])) {
                                 $nome = $_SESSION["Nome"];
                                 echo "
                                         <a href='perfil.php'> <p>" . $nome . "</p> </a>
+                                        <a href='logout.php' style='margin-left: 30px'> <p> Desconectar </p> </a>
                                     ";
                             } else {
                                 echo "<a href='Login.php'><p>Login</p></a>";
@@ -148,10 +183,16 @@
  
     <!--Catalogo-->
     <div class="pesquisa">
-        <input type="text" placeholder="Pesquisar">
-        <img class="icon-lupa" src="img/pesquisa.svg">
+        <form action="">
+            <input type="text" placeholder="Pesquisar">
+            <img class="icon-lupa" src="img/pesquisa.svg">
+            <button type="submit" class="pesquisa-button">Pesquisar</button>
+        </form>
     </div>
-    <h1><?php echo htmlspecialchars($Tipo); ?></h1> <!-- Exibe o tipo no cabeçalho -->
+    <div id="suggestions-dropdown" style="display: none; border: 1px solid #ddd; position: absolute; z-index: 1000; background-color: white;">
+        <!-- As sugestões aparecerão aqui -->
+    </div>
+    <h1><?php echo $_GET['Tipo']; ?></h1> <!-- Exibe o tipo no cabeçalho -->
     <div class="container">
         <?php 
         if (mysqli_num_rows($result) > 0) { // Verifica se há produtos

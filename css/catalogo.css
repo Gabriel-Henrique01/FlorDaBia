@@ -14,130 +14,119 @@ body {
     display: flex;
     flex-direction: row;
     z-index: 999;
-}
-
-.dropdown-menu{
+  }
+  
+  .dropdown-menu{
     position: absolute;
     display: none;
-    background-color: #e1a8ff;
+    background-color: #fff;
     margin: 14px 0;
     padding: 10px;
     width: 130px;
-}
-
-details {
+  }
+  
+  details {
     margin: 0;
     display: flex;
     z-index: 999;
-}
-
-summary {
+  }
+  
+  summary {
     display: flex;
     list-style: none;
     text-align: left;
-    color: white;
+    color: #000;
     padding: 10px;
     z-index: 999;
-}
-
-.dropdown-menu a{
+  }
+  
+  .dropdown-menu a{
     display: flex;
     flex-direction: row;
-    color: white;
+    color: #000;
     justify-content: start;
     list-style: none;
     padding: 10px;
-}
-
-.dropdown:hover .dropdown-menu{
+  }
+  
+  .dropdown:hover .dropdown-menu{
     list-style: none;
     display: block;
-}
-
-.header {
+  }
+  
+  .header {
     background-color: #e1a8ff;
     max-width: 100%;
     position: relative;
-}
-
-.sessoes-header {
+  }
+  
+  .sessoes-header {
     padding-bottom: 1%;
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: center; /* Centraliza os itens */
     align-items: center;
     width: 100%;
-}
-
-.escrita-header {
+  }
+  .escrita-header {
     color: white;
     padding: 0;
     margin: 0;
-}
-
-.logo {
+  }
+  
+  .logo {
     padding-top: 1%;
     width: 15%;
     height: auto;
-}
-
-.logo-header {
+  }
+  
+  .logo-header {
     display: flex;
     justify-content: center;
     padding-bottom: 1%;
-}
-
-.icon {
-    width: 4%;
-    height: 4%;
-    padding-left: 1%;
-    margin: 0;
-}
-
-
-
-.supremo {
+  }
+  
+  .supremo {
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 0;
-    margin: 0;
+    margin-left:20px;
+    margin-right: 20px;
     flex: 0;
     text-align: center;
-}
-
-.supremo a{
+  }
+  
+  .supremo a{
     text-decoration: none;
     color: white;
-}
-
-/* Menu Responsivo */
-.menu-icon {
+  }
+  
+  /* Menu Responsivo */
+  .menu-icon {
     display: none; /* Esconde o ícone do menu por padrão */
     cursor: pointer;
-}
-
-@media (max-width: 768px) {
+  }
+  
+  @media (max-width: 768px) {
     .sessoes-header {
         display: none; /* Esconde os itens do menu */
         flex-direction: column; /* Alinha verticalmente */
-        position: absolute;
+        align-items: center; /* Centraliza verticalmente */
+        justify-content: center; /* Centraliza horizontalmente */
         top: 100%;
-        left: 0;
+        left: 0; /* Ajusta a posição */
+        right: 0; /* Ajusta a posição */
         width: 100%;
         background-color: #e1a8ff; /* Cor de fundo do menu */
         z-index: 10;
     }
-
+  
     .linha{
         visibility: hidden;
     }
-
-    .icon{
-        width: 25px;
-        height: 25px;
-    }
-
+  
+   
     .menu-icon {
         display: block; /* Exibe o ícone do menu */
         display: flex;
@@ -145,15 +134,21 @@ summary {
         margin-top: -20px;
         
     }
-
+  
   
     .sessoes-header.active {
         display: flex; /* Exibe os itens quando ativo */
-        align-items: center;
-       
     }
-}
-
+  
+    .escrita-header{
+        margin-bottom: 10px;
+    }
+  
+    .supremo {
+        flex: 1; /* Faz cada item ocupar o mesmo espaço */
+        text-align: center; /* Centraliza o texto */
+    }
+  }
 /* Catálogo */
 
 .pesquisa {

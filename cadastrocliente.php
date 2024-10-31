@@ -10,6 +10,30 @@
         $row = mysqli_fetch_assoc($result);
 
     } 
+
+    if(isset($_POST["envio"])) {
+        $nome = $_POST["nome"];
+        $email = $_POST["email"];
+        $senha = $_POST["senha"];
+        $telefone = $_POST["telefone"];
+        $local = $_POST["CEP"];
+
+        $telefone = preg_replace('/\D/', '', $telefone); // Remove não numéricos
+       
+        $insert = "INSERT INTO `cliente` (`Nome`,`Telefone`,`Endereco`, `Email`, `Senha`) VALUES ('$nome', '$telefone', '$local', '$email', '$senha')";
+
+        if ($conn->query($insert) === TRUE) {
+            $_SESSION["Nome"] = $nome;
+            
+            $query = "SELECT IDCliente FROM cliente WHERE Email = '$email'";
+            $result = $conn->query($query);
+            $row = $result->fetch_assoc();
+            $_SESSION["ID"] = $row["IDCliente"];
+            echo "<script>window.location.href = 'Perfil.php';</script>";
+        } else {
+            echo "Error: " . $sql . "<br>" . $conn->error;
+        };
+    }
     
 ?>
 <!DOCTYPE html>
@@ -44,7 +68,6 @@
                     <div class="supremo" style="margin-left: 10%;">
                         <div class="dropdown">
                             <a href="Catalogo.php" onclick="toggleProdutos(event);" style="text-decoration: none;"><p class="escrita-header">Produtos</p></a>
-                            <img class="icon" src="img/flor-icon.svg" alt="Ícone de Produtos">
                             <div id="dropdownProdutos" class="dropdown-menu" style="display: none;">
                                 <?php
 
@@ -73,7 +96,6 @@
                     <div class="supremo">
                         <div class="dropdown">
                             <a href="#" onclick="toggleOcasiões(event);"> <p class="escrita-header">Ocasiões</p></a>
-                            <img class="icon" src="img/ocasioes.svg" alt="Ícone de Ocasiões">
                             <div id="dropdownOcasiões" class="dropdown-menu" style="display: none;">
                                 <?php
 
@@ -115,17 +137,24 @@
                     </div>
                     <div class="supremo">
                         <a href="carrinho.php"><p class="escrita-header">Carrinho</p></a>
-                        <img class="icon" src="img/carrinho.svg" alt="Ícone de Carrinho">
                     </div>
                     <div class="supremo">
                         <p class="escrita-header linha">|</p>
                     </div>
                     <div class="supremo" style="margin-right: 10%;">
                         <?php 
-                            if(isset($_SESSION["Nome"])) {
+                            if (isset($_SESSION["IDAdmin"]) && !empty($_SESSION["IDAdmin"])) {
+                                $nome = $_SESSION["Nome"];
+                                echo "
+                                        <a href='Admin/Admin.php'> <p>" . $nome . "</p> </a>
+                                        <a href='logout.php' style='margin-left: 30px'> <p> Desconectar </p> </a>
+                                    ";
+                            }
+                            elseif(isset($_SESSION["Nome"])) {
                                 $nome = $_SESSION["Nome"];
                                 echo "
                                         <a href='perfil.php'> <p>" . $nome . "</p> </a>
+                                        <a href='logout.php' style='margin-left: 30px'> <p> Desconectar </p> </a>
                                     ";
                             } else {
                                 echo "<a href='Login.php'><p>Login</p></a>";
@@ -143,11 +172,12 @@
             <h1>Cadastro</h1>
             <form id="formCadastro" action="" method="POST">
                 <input type="text" name="nome" placeholder="Nome:" required>
-                <input type="number" name="telefone" placeholder="Telefone:" required>
+                <input type="tel" name="telefone" id="tell" class="tell" placeholder="Telefone:" oninput="formatarNumero(this)" required>
                 <input type="number" name="CEP" placeholder="Cep:" required>
                 <input type="email" name="email" placeholder="E-mail:" required>
                 <input type="password" id="senha" name="senha" placeholder="Senha:"  maxlength="20" required>
                 <input type="password" id="senha1" name="senha1" placeholder="Confirme a senha:" maxlength="20" required>
+                <p style="margin-bottom: 10px;">Já possui conta?<a href="cadastrocliente.php" style="color: #E1A8FF;">Fazer login</a></p>
                 <input class="btn" type="submit" value="Cadastrar" name="envio">
             </form>
         </div>
@@ -195,30 +225,7 @@
 
         <script src="js/menu.js"></script>
         <script src="js/cadastro.js"></script>
-
-        <?php
-            if(isset($_POST["envio"])) {
-                $nome = $_POST["nome"];
-                $email = $_POST["email"];
-                $senha = $_POST["senha"];
-                $telefone = $_POST["telefone"];
-                $local = $_POST["CEP"];
-               
-                $insert = "INSERT INTO `cliente` (`Nome`,`Telefone`,`Endereco`, `Email`, `Senha`) VALUES ('$nome', '$telefone', '$local', '$email', '$senha')";
-
-                if ($conn->query($insert) === TRUE) {
-                    $_SESSION["Nome"] = $nome;
-                    
-                    $query = "SELECT IDCliente FROM cliente WHERE Email = '$email'";
-                    $result = $conn->query($query);
-                    $row = $result->fetch_assoc();
-                    $_SESSION["ID"] = $row["IDCliente"];
-                    echo "<script>window.location.href = 'Index.php';</script>";
-                } else {
-                    echo "Error: " . $sql . "<br>" . $conn->error;
-                };
-            }
-        ?>
+        <script src="js/formatacao.js"></script>
 
 
             

@@ -1,17 +1,45 @@
-<?php 
-    session_start();
-    include "conexao.php";
+<?php
+session_start();
+include 'conexao.php';
 
-    if(isset($_GET['Tipo'])) {
-        $Tipo = $_GET['Tipo'];
+// Verifica se a sessão IDAdmin está setada
+if (!isset($_SESSION["IDAdmin"]) || empty($_SESSION["IDAdmin"])) {
+    header("Location: cadastrocliente.php");
+    exit(); // Sempre use exit após um redirecionamento
+}
 
-        $query = "SELECT * FROM produtos WHERE Tipo = '$Tipo'";
-        $result = mysqli_query($conn, $query);
-        $row = mysqli_fetch_assoc($result);
+// Seu código de inserção e lógica aqui
+if (isset($_POST["envio"])) {
+    $nome = $_POST["nome"];
+    $telefone = preg_replace('/\D/', '', $_POST["telefone"]);
+    $email = $_POST["email"];
+    $senha = $_POST["senha"];
+    $local = $_POST["local"];
 
-    } 
-    
+    $insert = "INSERT INTO `admin` (`Nome`, `Telefone`, `Email`, `Senha`, `Local`) VALUES ('$nome', '$telefone', '$email', '$senha', '$local')";
+
+    if ($conn->query($insert) === TRUE) {
+        $sql = "SELECT * FROM admin WHERE Email = '$email' AND Senha = '$senha'";
+        $result = mysqli_query($conn, $sql);
+
+        if (mysqli_num_rows($result) == 1) {
+            $row = mysqli_fetch_assoc($result);
+            $_SESSION["IDAdmin"] = $row["IDAdmin"];
+            $_SESSION["Nome"] = $row["Nome"];
+            $_SESSION["Local"] = $row["Local"];
+            
+            // Redirecionar para Admin.php
+            header("Location: Admin/Admin.php");
+            exit(); // Para garantir que o script não continue
+        } else {
+            echo "Erro: " . $sql . "<br>" . $conn->error;
+        }
+    } else {
+        echo "Erro: " . $insert . "<br>" . $conn->error;
+    }
+}
 ?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -19,10 +47,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/reset.css">
     <link rel="website icon" type="png" href="img/Logo.png">
-    <link rel="stylesheet" href="css/cadastrocliente.css">
+    <link rel="stylesheet" href="css/cadastroadm.css">
 
     <title>Cadastra Administração</title>
     <link rel="stylesheet" href="css/style.css">
+
 </head>
 <body>
   
@@ -44,7 +73,6 @@
                     <div class="supremo" style="margin-left: 10%;">
                         <div class="dropdown">
                             <a href="Catalogo.php" onclick="toggleProdutos(event);" style="text-decoration: none;"><p class="escrita-header">Produtos</p></a>
-                            <img class="icon" src="img/flor-icon.svg" alt="Ícone de Produtos">
                             <div id="dropdownProdutos" class="dropdown-menu" style="display: none;">
                                 <?php
 
@@ -73,7 +101,6 @@
                     <div class="supremo">
                         <div class="dropdown">
                             <a href="#" onclick="toggleOcasiões(event);"> <p class="escrita-header">Ocasiões</p></a>
-                            <img class="icon" src="img/ocasioes.svg" alt="Ícone de Ocasiões">
                             <div id="dropdownOcasiões" class="dropdown-menu" style="display: none;">
                                 <?php
 
@@ -115,17 +142,24 @@
                     </div>
                     <div class="supremo">
                         <a href="carrinho.php"><p class="escrita-header">Carrinho</p></a>
-                        <img class="icon" src="img/carrinho.svg" alt="Ícone de Carrinho">
                     </div>
                     <div class="supremo">
                         <p class="escrita-header linha">|</p>
                     </div>
                     <div class="supremo" style="margin-right: 10%;">
                         <?php 
-                            if(isset($_SESSION["Nome"])) {
+                            if (isset($_SESSION["IDAdmin"]) && !empty($_SESSION["IDAdmin"])) {
+                                $nome = $_SESSION["Nome"];
+                                echo "
+                                        <a href='Admin/Admin.php'> <p>" . $nome . "</p> </a>
+                                        <a href='logout.php' style='margin-left: 30px'> <p> Desconectar </p> </a>
+                                    ";
+                            }
+                            elseif(isset($_SESSION["Nome"])) {
                                 $nome = $_SESSION["Nome"];
                                 echo "
                                         <a href='perfil.php'> <p>" . $nome . "</p> </a>
+                                        <a href='logout.php' style='margin-left: 30px'> <p> Desconectar </p> </a>
                                     ";
                             } else {
                                 echo "<a href='Login.php'><p>Login</p></a>";
@@ -143,17 +177,15 @@
             <h1>Cadastro</h1>
             <form id="formCadastro" action="" method="POST">
                 <input type="text" name="nome" placeholder="Nome:" required>
-                <input type="text" name="local" placeholder="Localização:" required>
+                <input type="tel" name="telefone" id="tell" class="tell" placeholder="Telefone:" oninput="formatarNumero(this)" required>
                 <input type="email" name="email" placeholder="E-mail:" required>
-                <input type="password" id="senha" name="senha" placeholder="Senha:"  maxlength="20" required>
-                <input type="password" id="senha1" name="senha1" placeholder="Confirme a senha:"   maxlength="20" required>
+                <input type="text" name="local" placeholder="Localização:" required>
+                <input type="password" id="senha" name="senha" placeholder="Senha:" maxlength="20" required>
+                <input type="password" id="senha1" name="senha1" placeholder="Confirme a senha:" maxlength="20" required>
                 <input class="btn" type="submit" value="Cadastrar" name="envio">
             </form>
         </div>
     </div>
-
-
-
 
         <!-- FOOTER -->
         <footer>
@@ -194,23 +226,9 @@
 
         <script src="js/menu.js"></script>
         <script src="js/cadastro.js"></script>
+        <script src="js/formatacao.js"></script>
 
-        <?php
-            if(isset($_POST["envio"])) {
-                $nome = $_POST["nome"];
-                $email = $_POST["email"];
-                $senha = $_POST["senha"];
-                $local = $_POST["local"];
-               
-                $insert = "INSERT INTO `admin` (`Nome`,`Email`,`Senha`, `Local`) VALUES ('$nome', '$email', '$senha', '$local')";
 
-                if ($conn->query($insert) === TRUE) {
-                        
-                } else {
-                    echo "Error: " . $sql . "<br>" . $conn->error;
-                };
-            }
-        ?>
 
 </body>
 </html>

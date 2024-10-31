@@ -75,22 +75,47 @@ if(!isset($_SESSION["IDAdmin"]) && empty($_SESSION["IDAdmin"])){
     <?php 
 
     if(isset($_POST['enviar'])){
-        $name = $_POST['nome'];
-        $price = $_POST['valor'];
-        $quantity = $_POST['quantidade'];
-        $img = "img/".$_FILES['img']['name'];
-        move_uploaded_file($_FILES['img']['tmp_name'], $img);
-        
-        // Adicionando o tipo de produto à consulta SQL
+        $Nome = $_POST['nome'];
+        $Valor = $_POST['valor'];
+        $Quantidade = $_POST['quantidade'];
         $tipo = $_POST['tipo']; // Captura o tipo selecionado
 
-        $sql = "INSERT INTO `produtos` (`Nome`, `Valor`, `Quantidade`, `Img`, `Tipo`) VALUES ('$name', '$price', '$quantity', '$img', '$tipo')";
+        if (isset($_FILES['img']) && $_FILES['img']['error'] == 0) {
+            // Define o caminho da pasta onde a imagem será salva
+            $imgFolder = dirname(__FILE__) . "/../img/";  // Essa linha indica aonde essa imagem deve ser salva
+    
+            $imgName = $_FILES['img']['name'];  // Nome do arquivo original
+            $fileName = preg_replace('/[^a-zA-Z0-9\-\_\.]/', '_', basename($imgName)); 
 
-        if ($conn->query($sql) === TRUE) {
-            echo "Produto adicionado com sucesso!";
+            /* ^
+                Na linha acima, estou pegando o nome do arquivo, não da onde ele esta vindo, exemplo do arquivo FlorDaBia/Img/Logo.png ele só
+                vai trazer Logo.png, ele tambem permite numeros maiusculos e minusculos, -,_ e . e caso exista espaço no nome do arquivo como 
+                Logo Flor Da Bia.png, ele ira substituir para Logo_Flor_Da_Bia.png, tudo que não estiver nessa lista de caracteris vai ser
+                substituido por _, ele tambem permite numeros
+            */
+            
+            // Caminho completo para salvar o arquivo
+            $imgPath = $imgFolder . $fileName;
+    
+            // Move o arquivo do local temporário para a pasta desejada
+            if (move_uploaded_file($_FILES['img']['tmp_name'], $imgPath)) {
+                // Salva o caminho relativo no banco de dados
+                $imgDbPath = "img/" . $fileName;  // Caminho relativo para salvar no banco de dados
+                
+                $sql = "INSERT INTO `produtos` (`Nome`, `Valor`, `Quantidade`, `Img`, `Tipo`) VALUES ('$Nome', '$Valor', '$Quantidade', '$imgDbPath', '$tipo')";
+                
+                if ($conn->query($sql) === TRUE) {
+                } else {
+                    echo "Erro: " . $sql . "<br>" . $conn->error;
+                }
+    
+            } else {
+                echo "Erro ao mover o arquivo para a pasta.";
+            }
         } else {
-            echo "Error: " . $sql . "<br>" . $conn->error;
+            echo "Erro no envio do arquivo.";
         }
+        
     }
     ?>
 </body>
